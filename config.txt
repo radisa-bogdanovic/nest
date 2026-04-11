@@ -1,0 +1,18 @@
+Da bi smo pokrenuli server kucamo: npm run start:dev
+
+
+nest g module taskovi
+
+U ovoj gore komandi:
+g- generatea
+module - tip onoga sto pravimo
+taskovi - naziv kategorije/sekcije/grupe
+
+Kada se okine ova komanda pravi se novi folder taskovi i pravi se novi fajl taskovi.module.ts
+
+nest g module <name> = nest g mo <name>
+nest g controller <name> = nest g co <name>
+nest g service <name> = nest g s <name>
+
+
+nest g resource <name> = pravi sve ovo iznad (module, controller i service) --no-spec
