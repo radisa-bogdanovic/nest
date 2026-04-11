@@ -8,31 +8,34 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
+import { TaskoviService } from './taskovi.service';
 
 @Controller('taskovi')
 export class TaskoviController {
-  // necemo raditi trenutno sa servisom
+  constructor(private readonly taskService: TaskoviService) {}
+
   @Get('svi-taskovi')
-  getTasks(@Query('zavrsen') zavrsen) {
-    return zavrsen ? zavrsen : [];
+  getTasks(@Query('prioritet') prioritet) {
+    return this.taskService.getTasks(prioritet);
   }
+
   @Get(':id')
   getTask(@Param('id') id) {
-    return id;
+    return this.taskService.getTask(id);
   }
 
   @Post('napravi')
   createTask(@Body() body: any) {
-    return body;
+    return this.taskService.createTask(body);
   }
 
   @Patch(':id')
   updateTask(@Param('id') id, @Body() body) {
-    return { id, ...body };
+    return this.taskService.updateTask(body, id);
   }
 
   @Delete(':id')
   deleteTask(@Param('id') id) {
-    return { id, message: 'hej obrisano' };
+    return this.taskService.delete(id);
   }
 }
