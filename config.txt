@@ -6,7 +6,7 @@ npm run start:dev
 nest g module taskovi
 
 U ovoj gore komandi:
-g- generatea
+g- generate 
 module - tip onoga sto pravimo
 taskovi - naziv kategorije/sekcije/grupe
 
@@ -17,4 +17,4 @@ nest g controller <name> = nest g co <name>
 nest g service <name> = nest g s <name>
 
 
-nest g resource <name> = pravi sve ovo iznad (module, controller i service) --no-spec
+nest g resource <name> = pravi sve ovo iznad (module, controller i service) 

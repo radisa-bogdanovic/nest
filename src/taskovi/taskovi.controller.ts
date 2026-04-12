@@ -13,13 +13,14 @@ import { TaskoviService } from './taskovi.service';
 import { ParseIntPipe } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
+import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
 
 @Controller('taskovi')
 export class TaskoviController {
   constructor(private readonly taskService: TaskoviService) {}
 
   @Get('svi-taskovi')
-  getTasks(@Query('prioritet') prioritet) {
+  getTasks(@Query() prioritet: FindSpecificTasks) {
     return this.taskService.getTasks(prioritet);
   }
 
