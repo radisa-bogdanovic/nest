@@ -1,4 +1,6 @@
-Da bi smo pokrenuli server kucamo: npm run start:dev
+Da bi smo pokrenuli server kucamo: 
+
+npm run start:dev
 
 
 nest g module taskovi
