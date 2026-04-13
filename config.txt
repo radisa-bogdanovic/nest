@@ -18,3 +18,9 @@ nest g service <name> = nest g s <name>
 
 
 nest g resource <name> = pravi sve ovo iznad (module, controller i service) 
+
+
+prisma force ip4 adress =  export NODE_OPTIONS=--dns-result-order=ipv4first
+npx prisma db push push na online baze
+
+?pgbouncer=true&sslmode=require dodati na kraj ako nema u url od connection stringa na kraj
