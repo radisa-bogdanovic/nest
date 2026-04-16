@@ -3,9 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskoviModule } from './taskovi/taskovi.module';
 import { NotesModule } from './notes/notes.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TaskoviModule, NotesModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TaskoviModule,
+    NotesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

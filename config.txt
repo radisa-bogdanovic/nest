@@ -24,3 +24,20 @@ prisma force ip4 adress =  export NODE_OPTIONS=--dns-result-order=ipv4first
 npx prisma db push push na online baze
 
 ?pgbouncer=true&sslmode=require dodati na kraj ako nema u url od connection stringa na kraj
+
+
+Ako se desi da se prisma zaglupi:
+rm -rf node_modules
+rm package-lock.json
+
+Onda ponovo instaliraj sve: 
+npm install
+npx prisma generate
+npm run start:dev
+
+Instalirati ovo i dodati u prisma.service
+npm install @prisma/adapter-pg pg
+npm install --save-dev @types/pg
+
+
+DATABASE_URL="postgresql://postgres.omwpxoihokibwtjqgwyj:Nest123!123@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true"

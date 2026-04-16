@@ -1,107 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
-import { Prioritet } from './dto/prioritet.dto';
 import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
-
-class TasksInit extends NapraviTaskDto {
-  id!: number;
-}
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TaskoviService {
-  private tasks: TasksInit[] = [
-    {
-      id: 1,
-      name: 'task1',
-      prioritet: Prioritet.Mali,
-      opis: 'Obican opis',
-      kreator: 'tictac992@gmail.com',
-    },
-    {
-      id: 2,
-      name: 'task2',
-      prioritet: Prioritet.Srednji,
-      opis: 'Obican opis',
-      kreator: 'tictac992@gmail.com',
-    },
-    {
-      id: 3,
-      name: 'task3',
-      prioritet: Prioritet.Mali,
-      opis: 'Obican opis',
-      kreator: 'tictac992@gmail.com',
-    },
-    {
-      id: 4,
-      name: 'task4',
-      prioritet: Prioritet.Veliki,
-      opis: 'Obican opis',
-      kreator: 'tictac992@gmail.com',
-    },
-    {
-      id: 5,
-      name: 'task5',
-      prioritet: Prioritet.Veliki,
-      opis: 'Obican opis',
-      kreator: 'tictac992@gmail.com',
-    },
-    {
-      id: 6,
-      name: 'task6',
-      prioritet: Prioritet.Mali,
-      opis: 'Obican opis',
-      kreator: 'test@gmail.com',
-    },
-    {
-      id: 7,
-      name: 'task7',
-      prioritet: Prioritet.Srednji,
-      opis: 'Obican opis',
-      kreator: 'test@gmail.com',
-    },
-  ];
+  constructor(private prisma: PrismaService) {}
 
-  getTasks(querry: FindSpecificTasks) {
-    if (querry.prioritet) {
-      return this.tasks.filter(
-        (task: TasksInit) => task.prioritet === querry.prioritet,
-      );
-    }
-    return this.tasks;
+  async getTasks(querry: FindSpecificTasks) {
+    return this.prisma.task.findMany({
+      //findMany pronadji sve ili sa odredjenom kondicijom
+      where: querry.prioritet ? { prioritet: querry.prioritet } : {},
+      //where predstavlja kondiciju. Ako posaljemo {} vraca sve. Ako postavimo prioritet(key):querry.prioritet(vradnost)
+    });
   }
 
-  getTask(id: number) {
-    const task = this.tasks.find((task: TasksInit) => task.id === id);
+  async getTask(id: number) {
+    const task = this.prisma.task.findUnique({
+      where: { id },
+      // {id} isto sto i {id:id}
+      //findUnique pronalazi jedinstven eleemnt
+    });
 
     if (!task) {
-      throw new NotFoundException(`Task sa id:${id} ne postoji allooo`);
+      throw new NotFoundException('Ne radi alo');
     }
-
     return task;
   }
 
-  createTask(body: NapraviTaskDto) {
-    const newId = this.tasks.length + 1;
-    const newTask = { id: newId, ...body };
-    this.tasks.push(newTask);
-    return newTask;
-  }
-
-  updateTask(body: AzurirajTaskDto, id: number) {
-    const affectedTask = this.getTask(id);
-    this.tasks = this.tasks.map((task: TasksInit) => {
-      if (task.id === id) {
-        return { ...task, ...body };
-      }
-      return task;
+  async createTask(body: NapraviTaskDto) {
+    return await this.prisma.task.create({
+      data: body,
     });
-    return affectedTask;
+    //Create je metoda za pravljenje neke stvari. Ona ocekuje u data da se prosledi data/body
   }
 
-  delete(id: number) {
-    const affectedTask = this.getTask(id);
-    this.tasks = this.tasks.filter((task: TasksInit) => task.id !== id);
-    return { message: 'Task je obrisan', deletedTask: affectedTask };
+  async updateTask(body: AzurirajTaskDto, id: number) {
+    return this.prisma.task.update({
+      where: { id },
+      data: body,
+    });
+
+    //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
+  }
+
+  async delete(id: number) {
+    return this.prisma.task.delete({
+      where: { id },
+    });
+    //delete brise glidajuci po id
   }
 }
