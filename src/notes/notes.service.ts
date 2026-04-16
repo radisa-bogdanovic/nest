@@ -1,69 +1,70 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-
-class NoteInit extends CreateNoteDto {
-  id!: number;
-}
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotesService {
-  private notes: NoteInit[] = [
-    {
-      description: 'Opis',
-      id: 1,
-      kreator: 'tictac992@gmail.com',
-      title: 'prvi notes',
-    },
-    {
-      description: 'Opis',
-      id: 2,
-      kreator: 'tictac992@gmail.com',
-      title: 'Drugi notes',
-    },
-    {
-      description: 'Opis',
-      id: 3,
-      kreator: 'tictac992@gmail.com',
-      title: 'Tester notes',
-    },
-  ];
+  constructor(private prisma: PrismaService) {}
 
-  create(createNoteDto: CreateNoteDto) {
-    const newId = this.notes.length + 1;
-    const newNotes = { id: newId, ...createNoteDto };
-    this.notes.push(newNotes);
-    return newNotes;
-  }
-
-  findAll() {
-    return this.notes;
-  }
-
-  findOne(id: number) {
-    const note = this.notes.find((note: NoteInit) => note.id === id);
-
-    if (!note) {
-      throw new NotFoundException(`Note sa id:${id} ne postoji allooo`);
-    }
-
-    return note;
-  }
-
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    const affectedNote = this.findOne(id);
-    this.notes = this.notes.map((note: NoteInit) => {
-      if (note.id === id) {
-        return { ...note, ...updateNoteDto };
-      }
-      return note;
+  async create(createNoteDto: CreateNoteDto) {
+    return this.prisma.note.create({
+      data: createNoteDto,
     });
-    return affectedNote;
   }
 
-  remove(id: number) {
-    const affectedNote = this.findOne(id);
-    this.notes = this.notes.filter((task: NoteInit) => task.id !== id);
-    return { message: 'Task je obrisan', deletedTask: affectedNote };
+  async findAll() {
+    return this.prisma.note.findMany();
+  }
+
+  async findOne(id: number) {
+    const notes = await this.prisma.note.findUnique({
+      where: { id },
+      // {id} isto sto i {id:id}
+      //findUnique pronalazi jedinstven eleemnt
+    });
+
+    if (!notes) {
+      //ako ne postoji u bazi vrati null pa zato ovde gledamo da li postoji ili ne
+      throw new NotFoundException(`Element sa id:${id} nije pronadjen`);
+    }
+    return notes;
+  }
+
+  async update(id: number, updateNoteDto: UpdateNoteDto) {
+    try {
+      return await this.prisma.note.update({
+        where: { id },
+        data: updateNoteDto,
+      });
+    } catch (error: any) {
+      //ovde vrati error body i zato radimo sa try/catch
+      if (error.code === 'P2025') {
+        throw new NotFoundException(
+          `Hej, element sa id:${id} ne postoji u bazi!`,
+        );
+      } else {
+        throw new Error();
+      }
+    }
+    //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
+  }
+
+  async remove(id: number) {
+    try {
+      return await this.prisma.note.delete({
+        where: { id },
+      });
+    } catch (error: any) {
+      //ovde vrati error body i zato radimo sa try/catch
+      if (error.code === 'P2025') {
+        throw new NotFoundException(
+          `Hej, element sa id:${id} ne postoji u bazi!`,
+        );
+      } else {
+        throw new Error();
+      }
+    }
+    //delete brise glidajuci po id
   }
 }

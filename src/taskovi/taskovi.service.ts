@@ -17,14 +17,15 @@ export class TaskoviService {
   }
 
   async getTask(id: number) {
-    const task = this.prisma.task.findUnique({
+    const task = await this.prisma.task.findUnique({
       where: { id },
       // {id} isto sto i {id:id}
       //findUnique pronalazi jedinstven eleemnt
     });
 
     if (!task) {
-      throw new NotFoundException('Ne radi alo');
+      //ako ne postoji u bazi vrati null pa zato ovde gledamo da li postoji ili ne
+      throw new NotFoundException(`Element sa id:${id} nije pronadjen`);
     }
     return task;
   }
@@ -37,18 +38,39 @@ export class TaskoviService {
   }
 
   async updateTask(body: AzurirajTaskDto, id: number) {
-    return this.prisma.task.update({
-      where: { id },
-      data: body,
-    });
-
+    try {
+      return await this.prisma.task.update({
+        where: { id },
+        data: body,
+      });
+    } catch (error: any) {
+      //ovde vrati error body i zato radimo sa try/catch
+      if (error.code === 'P2025') {
+        throw new NotFoundException(
+          `Hej, element sa id:${id} ne postoji u bazi!`,
+        );
+      } else {
+        throw new Error();
+      }
+    }
     //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
   }
 
   async delete(id: number) {
-    return this.prisma.task.delete({
-      where: { id },
-    });
+    try {
+      return await this.prisma.task.delete({
+        where: { id },
+      });
+    } catch (error: any) {
+      //ovde vrati error body i zato radimo sa try/catch
+      if (error.code === 'P2025') {
+        throw new NotFoundException(
+          `Hej, element sa id:${id} ne postoji u bazi!`,
+        );
+      } else {
+        throw new Error();
+      }
+    }
     //delete brise glidajuci po id
   }
 }
