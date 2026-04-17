@@ -54,6 +54,8 @@ export class TaskoviService {
       }
     }
     //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
+    //ako koristimo updateMany error nece biti trowan nego ce vratiti count:0 i mozemo da gledamo updated.count ===0 kao izvor istine da puknemo error
+    // a updated bi bilo tipa const updated = await thi.prisma.task.updateMany(... ostalo je sve isto kao i za updaet
   }
 
   async delete(id: number) {
