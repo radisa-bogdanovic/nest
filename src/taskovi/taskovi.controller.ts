@@ -14,6 +14,7 @@ import { ParseIntPipe } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
 import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('taskovi')
 export class TaskoviController {
@@ -23,7 +24,7 @@ export class TaskoviController {
   getTasks(@Query() prioritet: FindSpecificTasks) {
     return this.taskService.getTasks(prioritet);
   }
-
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Get(':id')
   getTask(
     @Param(
