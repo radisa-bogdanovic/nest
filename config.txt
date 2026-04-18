@@ -43,3 +43,6 @@ npm install --save-dev @types/pg
 DATABASE_URL="postgresql://postgres.omwpxoihokibwtjqgwyj:Nest123!123@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
 Link do liste error kodova i opisa za njih https://restfulapi.net/http-status-codes/
+
+
+placeholder za test =>   it('', async () => {});

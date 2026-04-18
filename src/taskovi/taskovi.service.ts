@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
 import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TaskoviService {
