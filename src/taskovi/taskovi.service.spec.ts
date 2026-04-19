@@ -7,7 +7,7 @@ import { NotFoundException } from '@nestjs/common';
 describe('Taskovi service test', () => {
   let service: TaskoviService;
   let prisma: PrismaService;
-
+  let module: TestingModule;
   const mockPrisma = {
     task: {
       findMany: jest.fn(),
@@ -19,7 +19,7 @@ describe('Taskovi service test', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         TaskoviService,
         {
@@ -36,7 +36,9 @@ describe('Taskovi service test', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-
+  afterAll(async () => {
+    await module.close();
+  });
   ///get test i get tests
 
   it('Trebalo bi da vrati sve taskove ako nema querry', async () => {

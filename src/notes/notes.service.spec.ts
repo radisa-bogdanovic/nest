@@ -6,6 +6,7 @@ import { NotFoundException } from '@nestjs/common';
 describe('Notes tests', () => {
   let service: NotesService;
   let prisma: PrismaService;
+  let module: TestingModule;
 
   const mockPrisma = {
     note: {
@@ -18,7 +19,7 @@ describe('Notes tests', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         NotesService,
         {
@@ -33,6 +34,9 @@ describe('Notes tests', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+  afterAll(() => {
+    module.close();
   });
 
   it('Trebalo bi da vrati listu notes', async () => {
