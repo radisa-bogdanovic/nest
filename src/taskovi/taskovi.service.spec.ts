@@ -1,7 +1,6 @@
-import { TestingModule } from '@nestjs/testing';
+import { TestingModule, Test } from '@nestjs/testing';
 import { TaskoviService } from './taskovi.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { Test } from '@nestjs/testing';
 import { Prioritet } from './dto/prioritet.dto';
 import { NotFoundException } from '@nestjs/common';
 
@@ -51,7 +50,7 @@ describe('Taskovi service test', () => {
     });
   });
 
-  it('Trebalo bi da filtrira po prioritetu i da vrati sve sa tim priopritetom', async () => {
+  it('Trebalo bi da vrati sve sa tim priopritetom', async () => {
     mockPrisma.task.findMany.mockResolvedValue([
       { id: 1, prioritet: Prioritet.Veliki },
       { id: 2, prioritet: Prioritet.Veliki },

@@ -1,17 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class NotesService {
   constructor(private prisma: PrismaService) {}
-
-  async create(createNoteDto: CreateNoteDto) {
-    return this.prisma.note.create({
-      data: createNoteDto,
-    });
-  }
 
   async findAll() {
     return this.prisma.note.findMany();
@@ -30,7 +24,11 @@ export class NotesService {
     }
     return notes;
   }
-
+  async create(createNoteDto: CreateNoteDto) {
+    return this.prisma.note.create({
+      data: createNoteDto,
+    });
+  }
   async update(id: number, updateNoteDto: UpdateNoteDto) {
     try {
       return await this.prisma.note.update({
