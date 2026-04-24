@@ -30,9 +30,14 @@ export class TaskoviService {
     return task;
   }
 
-  async createTask(body: NapraviTaskDto) {
+  async createTask(body: NapraviTaskDto, userId: number) {
     return await this.prisma.task.create({
-      data: body,
+      data: {
+        ...body,
+        user: {
+          connect: { id: userId },
+        },
+      },
     });
     //Create je metoda za pravljenje neke stvari. Ona ocekuje u data da se prosledi data/body
   }

@@ -9,8 +9,4 @@ export class NapraviTaskDto extends PrioritetDTO {
   @IsString()
   @IsOptional()
   opis?: string;
-
-  @IsEmail()
-  @IsNotEmpty({ message: 'Kretor mora sadrzati neku vrednost!' })
-  kreator!: string;
 }

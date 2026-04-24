@@ -8,6 +8,7 @@ import {
   Patch,
   Query,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { TaskoviService } from './taskovi.service';
 import { ParseIntPipe } from '@nestjs/common';
@@ -41,8 +42,8 @@ export class TaskoviController {
   }
 
   @Post('napravi')
-  createTask(@Body() body: NapraviTaskDto) {
-    return this.taskService.createTask(body);
+  createTask(@Body() body: NapraviTaskDto, @Req() req: any) {
+    return this.taskService.createTask(body, req.user.id);
   }
 
   @Patch(':id')

@@ -8,8 +8,4 @@ export class CreateNoteDto {
   @IsString({ message: 'Opis mora biti u tekstualnom formatu' })
   @IsNotEmpty({ message: 'Opis mora sadrzati neku vrednost!' })
   description!: string;
-
-  @IsEmail()
-  @IsNotEmpty({ message: 'Kretor mora sadrzati neku vrednost!' })
-  kreator!: string;
 }

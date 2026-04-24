@@ -6,6 +6,7 @@ import { NotesModule } from './notes/notes.module';
 import { ConfigModule } from '@nestjs/config';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { APP_GUARD } from '@nestjs/core';
 
     TaskoviModule,
     NotesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
