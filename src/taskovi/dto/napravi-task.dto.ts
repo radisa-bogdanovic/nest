@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { PrioritetDTO } from './prioritet.dto';
 
 export class NapraviTaskDto extends PrioritetDTO {

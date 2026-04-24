@@ -46,3 +46,15 @@ Link do liste error kodova i opisa za njih https://restfulapi.net/http-status-co
 
 
 placeholder za test =>   it('', async () => {});
+
+at eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidGVzdDJAZ21haWwuY29tIiwiaWF0IjoxNzc3MDMyMjAxLCJleHAiOjE3NzcwMzU4MDF9.7tH7U0Vfx3ry0j41pmLS5gmPfRcbs9EGslN8Ztz7BGM
+
+
+
+body za tasks 
+
+{
+"name":"taskNAme",
+"opis":"opiisss",
+"prioritet":"Veliki"
+}
