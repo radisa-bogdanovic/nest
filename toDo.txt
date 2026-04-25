@@ -1,0 +1,13 @@
+Dodati admin rolu!
+ = Admin ce moci da dobija podatke za sve usere(taskove,notes), da izlista sve usere, da obrise usere
+Dodati additional info o useru (da li je ulogovan itd)
+
+
+
+
+Dodati cors !
+
+
+Dodati refresh token  ! 
+E2e testovi
+ =
