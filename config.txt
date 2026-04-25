@@ -47,7 +47,7 @@ Link do liste error kodova i opisa za njih https://restfulapi.net/http-status-co
 
 placeholder za test =>   it('', async () => {});
 
-at eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidGVzdDJAZ21haWwuY29tIiwiaWF0IjoxNzc3MDMyMjAxLCJleHAiOjE3NzcwMzU4MDF9.7tH7U0Vfx3ry0j41pmLS5gmPfRcbs9EGslN8Ztz7BGM
+ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzExMTU1NiwiZXhwIjoxNzc3MTE1MTU2fQ.8nsgQ7pNk44Gbm1gwbSCvJW_CJP54Pv6npg7nR1o7ug
 
 
 
