@@ -8,17 +8,19 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TaskoviService {
   constructor(private prisma: PrismaService) {}
 
-  async getTasks(querry: FindSpecificTasks) {
+  async getTasks(querry: FindSpecificTasks, userId: number) {
     return this.prisma.task.findMany({
       //findMany pronadji sve ili sa odredjenom kondicijom
-      where: querry.prioritet ? { prioritet: querry.prioritet } : {},
+      where: querry.prioritet
+        ? { prioritet: querry.prioritet, userId }
+        : { userId },
       //where predstavlja kondiciju. Ako posaljemo {} vraca sve. Ako postavimo prioritet(key):querry.prioritet(vradnost)
     });
   }
 
-  async getTask(id: number) {
+  async getTask(id: number, userId: number) {
     const task = await this.prisma.task.findUnique({
-      where: { id },
+      where: { id, userId },
       // {id} isto sto i {id:id}
       //findUnique pronalazi jedinstven eleemnt
     });
@@ -42,18 +44,16 @@ export class TaskoviService {
     //Create je metoda za pravljenje neke stvari. Ona ocekuje u data da se prosledi data/body
   }
 
-  async updateTask(body: AzurirajTaskDto, id: number) {
+  async updateTask(body: AzurirajTaskDto, id: number, userId: number) {
     try {
       return await this.prisma.task.update({
-        where: { id },
+        where: { id, userId },
         data: body,
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch
       if (error.code === 'P2025') {
-        throw new NotFoundException(
-          `Hej, element sa id:${id} ne postoji u bazi!`,
-        );
+        throw new NotFoundException(`Hej, element sa id:${id} nije pronadjen!`);
       } else {
         throw new Error();
       }
@@ -63,17 +63,15 @@ export class TaskoviService {
     // a updated bi bilo tipa const updated = await thi.prisma.task.updateMany(... ostalo je sve isto kao i za updaet
   }
 
-  async delete(id: number) {
+  async delete(id: number, userId: number) {
     try {
       return await this.prisma.task.delete({
-        where: { id },
+        where: { id, userId },
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch
       if (error.code === 'P2025') {
-        throw new NotFoundException(
-          `Hej, element sa id:${id} ne postoji u bazi!`,
-        );
+        throw new NotFoundException(`Hej, element sa id:${id} nije pronadjen!`);
       } else {
         throw new Error();
       }

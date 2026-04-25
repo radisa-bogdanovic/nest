@@ -24,8 +24,8 @@ export class TaskoviController {
   constructor(private readonly taskService: TaskoviService) {}
 
   @Get('svi-taskovi')
-  getTasks(@Query() prioritet: FindSpecificTasks) {
-    return this.taskService.getTasks(prioritet);
+  getTasks(@Query() prioritet: FindSpecificTasks, @Req() req: any) {
+    return this.taskService.getTasks(prioritet, req.user.userId);
   }
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Get(':id')
@@ -39,12 +39,13 @@ export class TaskoviController {
       }),
     ) // primer sa specificnom porukom
     id: number,
+    @Req()
+    req: any,
   ) {
-    return this.taskService.getTask(id);
+    return this.taskService.getTask(id, req.user.userId);
   }
 
   @Post('napravi')
-  @UseGuards(AuthGuard('jwt'))
   createTask(@Body() body: NapraviTaskDto, @Req() req: any) {
     return this.taskService.createTask(body, req.user.userId);
   }
@@ -53,12 +54,13 @@ export class TaskoviController {
   updateTask(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: AzurirajTaskDto,
+    @Req() req: any,
   ) {
-    return this.taskService.updateTask(body, id);
+    return this.taskService.updateTask(body, id, req.user.userId);
   }
 
   @Delete(':id')
-  deleteTask(@Param('id', ParseIntPipe) id: number) {
-    return this.taskService.delete(id);
+  deleteTask(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.taskService.delete(id, req.user.userId);
   }
 }

@@ -7,13 +7,13 @@ import { PrismaService } from '../prisma/prisma.service';
 export class NotesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    return this.prisma.note.findMany();
+  async findAll(userId: number) {
+    return this.prisma.note.findMany({ where: { userId } });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, userId: number) {
     const notes = await this.prisma.note.findUnique({
-      where: { id },
+      where: { id, userId },
       // {id} isto sto i {id:id}
       //findUnique pronalazi jedinstven eleemnt
     });
@@ -34,18 +34,16 @@ export class NotesService {
       },
     });
   }
-  async update(id: number, updateNoteDto: UpdateNoteDto) {
+  async update(id: number, updateNoteDto: UpdateNoteDto, userId: number) {
     try {
       return await this.prisma.note.update({
-        where: { id },
+        where: { id, userId },
         data: updateNoteDto,
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch
       if (error.code === 'P2025') {
-        throw new NotFoundException(
-          `Hej, element sa id:${id} ne postoji u bazi!`,
-        );
+        throw new NotFoundException(`Hej, element sa id:${id} nije pronadjen!`);
       } else {
         throw new Error();
       }
@@ -53,17 +51,15 @@ export class NotesService {
     //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId: number) {
     try {
       return await this.prisma.note.delete({
-        where: { id },
+        where: { id, userId },
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch
       if (error.code === 'P2025') {
-        throw new NotFoundException(
-          `Hej, element sa id:${id} ne postoji u bazi!`,
-        );
+        throw new NotFoundException(`Hej, element sa id:${id} nije pronadjen!`);
       } else {
         throw new Error();
       }

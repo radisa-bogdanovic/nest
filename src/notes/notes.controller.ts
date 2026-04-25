@@ -19,29 +19,30 @@ export class NotesController {
 
   @Post()
   create(@Body() createNoteDto: CreateNoteDto, @Req() req: any) {
-    return this.notesService.create(createNoteDto, req.user.id);
+    return this.notesService.create(createNoteDto, req.user.userId);
   }
 
   @Get()
-  findAll() {
-    return this.notesService.findAll();
+  findAll(@Req() req: any) {
+    return this.notesService.findAll(req.user.userId);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.notesService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.notesService.findOne(id, req.user.userId);
   }
 
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateNoteDto: UpdateNoteDto,
+    @Req() req: any,
   ) {
-    return this.notesService.update(id, updateNoteDto);
+    return this.notesService.update(id, updateNoteDto, req.user.userId);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.notesService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.notesService.remove(id, req.user.userId);
   }
 }
