@@ -2,21 +2,18 @@ import { PrismaService } from '../prisma/prisma.service';
 import { NotesService } from './notes.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import {
+  mockPrisma,
+  mockUser1,
+  mockUser2,
+  userId,
+  titleMock,
+} from '../utils/testMockData';
 
 describe('Notes tests', () => {
   let service: NotesService;
   let prisma: PrismaService;
   let module: TestingModule;
-
-  const mockPrisma = {
-    note: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-  };
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
@@ -40,72 +37,79 @@ describe('Notes tests', () => {
   });
 
   it('Trebalo bi da vrati listu notes', async () => {
-    mockPrisma.note.findMany.mockResolvedValue([{ id: 1 }, { id: 2 }]);
-    const result = await service.findAll();
-    expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+    mockPrisma.note.findMany.mockResolvedValue([mockUser1, mockUser2]);
+    const result = await service.findAll(userId);
+    expect(result).toEqual([mockUser1, mockUser2]);
   });
 
   it('Trebalo bi da vrati notes ako postoji', async () => {
-    mockPrisma.note.findUnique.mockResolvedValue({ id: 1 });
+    mockPrisma.note.findUnique.mockResolvedValue(mockUser1);
 
-    const result = await service.findOne(1);
-    expect(result).toEqual({ id: 1 });
+    const result = await service.findOne(1, userId);
+    expect(result).toEqual(mockUser1);
   });
 
   it('Trebalo bi da pukne error ako notes ne postoji', async () => {
     mockPrisma.note.findUnique.mockResolvedValue(null);
-    await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
+    await expect(service.findOne(1, userId)).rejects.toThrow(NotFoundException);
   });
 
   it('Trebalo bi da napravi notes', async () => {
-    const notesData = { name: 'test ime' };
     mockPrisma.note.create.mockResolvedValueOnce({
       id: 1,
-      ...notesData,
+      ...titleMock,
     });
 
-    const result = await service.create(notesData as any);
+    const result = await service.create(titleMock as any, userId);
 
     expect(result).toEqual({
       id: 1,
-      ...notesData,
+      ...titleMock,
     });
 
-    expect(prisma.note.create).toHaveBeenCalledWith({ data: notesData });
+    expect(prisma.note.create).toHaveBeenCalledWith({
+      data: {
+        ...titleMock,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
   });
 
   it('Trebalo bi da azurira notes', async () => {
-    const taskData = { ime: 'Azurirane' };
     mockPrisma.note.update.mockResolvedValueOnce({
       id: 1,
-      ...taskData,
+      ...titleMock,
     });
 
-    const result = await service.update(taskData as any, 1 as any);
+    const result = await service.update(titleMock as any, 1 as any, userId);
 
     expect(result).toEqual({
       id: 1,
-      ...taskData,
+      ...titleMock,
     });
   });
 
   it('Trebalo bi da pukne kod update ako notes ne postoji', async () => {
     mockPrisma.note.update.mockRejectedValue({ code: 'P2025' });
-    await expect(service.update({} as any, 999 as any)).rejects.toThrow(
+    await expect(service.update({} as any, 999 as any, userId)).rejects.toThrow(
       NotFoundException,
     );
   });
 
   it('Trebalo bi da obrise note', async () => {
-    mockPrisma.note.delete.mockResolvedValue({ id: 1 });
+    mockPrisma.note.delete.mockResolvedValue(mockUser1);
 
-    const result = await service.remove(1);
+    const result = await service.remove(1, userId);
 
-    expect(result).toEqual({ id: 1 });
+    expect(result).toEqual(mockUser1);
   });
 
   it('Trebalo bi da pukne error ako task ne postoji u bazi tokom brisanja', async () => {
     mockPrisma.note.delete.mockRejectedValue({ code: 'P2025' });
-    await expect(service.remove(999)).rejects.toThrow(NotFoundException);
+    await expect(service.remove(999, userId)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 });

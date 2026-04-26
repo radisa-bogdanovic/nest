@@ -37,7 +37,7 @@ export class NotesService {
   async update(id: number, updateNoteDto: UpdateNoteDto, userId: number) {
     try {
       return await this.prisma.note.update({
-        where: { id, userId },
+        where: { id, userId }, // where: {id:id, userId:userID} <== azuraj note koji ima specifican id i samo ako je vlasnik user sa userId
         data: updateNoteDto,
       });
     } catch (error: any) {
