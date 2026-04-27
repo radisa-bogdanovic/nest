@@ -47,8 +47,7 @@ Link do liste error kodova i opisa za njih https://restfulapi.net/http-status-co
 
 placeholder za test =>   it('', async () => {});
 
- eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzExMTU1NiwiZXhwIjoxNzc3MTE1MTU2fQ.8nsgQ7pNk44Gbm1gwbSCvJW_CJP54Pv6npg7nR1o7ug
-
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzIxMjg0MiwiZXhwIjoxNzc3MjEzNzQyfQ.YTofsbQGcEBYU2M_XDNLf8XOfCQuwlhF7wUBLb3WNKk
 
 
 body za tasks 
@@ -57,4 +56,10 @@ body za tasks
 "name":"taskNAme",
 "opis":"opiisss",
 "prioritet":"Veliki"
+}
+
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzIxMzY5OSwiZXhwIjoxNzc3MjE0NTk5fQ.RmPnIhkZMEzewDLqsu7CASwQahMdCrJvI8B5787o0i4",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzIxMzY5OSwiZXhwIjoxNzc3ODE4NDk5fQ.TLdEkRkA14Yle7x8AhTgK_5pXzUUf2SXmucgweDRAp4"
 }
