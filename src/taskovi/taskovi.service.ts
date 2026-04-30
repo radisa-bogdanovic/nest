@@ -4,23 +4,26 @@ import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
 import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
+import { conditionData } from '../../common/helpers/role.helpers';
+
 @Injectable()
 export class TaskoviService {
   constructor(private prisma: PrismaService) {}
 
-  async getTasks(querry: FindSpecificTasks, userId: number) {
+  async getTasks(querry: FindSpecificTasks, req: any) {
+    const condition = conditionData(req);
+
     return this.prisma.task.findMany({
       //findMany pronadji sve ili sa odredjenom kondicijom
-      where: querry.prioritet
-        ? { prioritet: querry.prioritet, userId }
-        : { userId },
+      where: condition,
       //where predstavlja kondiciju. Ako posaljemo {} vraca sve. Ako postavimo prioritet(key):querry.prioritet(vradnost)
     });
   }
 
-  async getTask(id: number, userId: number) {
+  async getTask(id: number, req: any) {
+    const condition = conditionData(req);
     const task = await this.prisma.task.findUnique({
-      where: { id, userId },
+      where: { id, ...condition },
       // {id} isto sto i {id:id}
       //findUnique pronalazi jedinstven eleemnt
     });
@@ -32,22 +35,23 @@ export class TaskoviService {
     return task;
   }
 
-  async createTask(body: NapraviTaskDto, userId: number) {
+  async createTask(body: NapraviTaskDto, req: any) {
     return await this.prisma.task.create({
       data: {
         ...body,
         user: {
-          connect: { id: userId },
+          connect: { id: req.user.userId },
         },
       },
     });
     //Create je metoda za pravljenje neke stvari. Ona ocekuje u data da se prosledi data/body
   }
 
-  async updateTask(body: AzurirajTaskDto, id: number, userId: number) {
+  async updateTask(body: AzurirajTaskDto, id: number, req: any) {
+    const condition = conditionData(req);
     try {
       return await this.prisma.task.update({
-        where: { id, userId },
+        where: { id, ...condition },
         data: body,
       });
     } catch (error: any) {
@@ -63,10 +67,11 @@ export class TaskoviService {
     // a updated bi bilo tipa const updated = await thi.prisma.task.updateMany(... ostalo je sve isto kao i za updaet
   }
 
-  async delete(id: number, userId: number) {
+  async delete(id: number, req: any) {
+    const condition = conditionData(req);
     try {
       return await this.prisma.task.delete({
-        where: { id, userId },
+        where: { id, ...condition },
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch

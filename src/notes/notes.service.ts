@@ -2,18 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { conditionData } from '../../common/helpers/role.helpers';
 
 @Injectable()
 export class NotesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(userId: number) {
-    return this.prisma.note.findMany({ where: { userId } });
+  async findAll(req: any) {
+    const { prioritet, ...notesCondition } = conditionData(req);
+    return this.prisma.note.findMany({ where: notesCondition });
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: number, req: any) {
+    const condition = conditionData(req);
     const notes = await this.prisma.note.findUnique({
-      where: { id, userId },
+      where: { id, ...condition },
       // {id} isto sto i {id:id}
       //findUnique pronalazi jedinstven eleemnt
     });
@@ -24,20 +27,21 @@ export class NotesService {
     }
     return notes;
   }
-  async create(createNoteDto: CreateNoteDto, userId: number) {
+  async create(createNoteDto: CreateNoteDto, req: any) {
     return this.prisma.note.create({
       data: {
         ...createNoteDto,
         user: {
-          connect: { id: userId },
+          connect: { id: req.user.userId },
         },
       },
     });
   }
-  async update(id: number, updateNoteDto: UpdateNoteDto, userId: number) {
+  async update(id: number, updateNoteDto: UpdateNoteDto, req: any) {
+    const condition = conditionData(req);
     try {
       return await this.prisma.note.update({
-        where: { id, userId }, // where: {id:id, userId:userID} <== azuraj note koji ima specifican id i samo ako je vlasnik user sa userId
+        where: { id, ...condition }, // where: {id:id, userId:userID} <== azuraj note koji ima specifican id i samo ako je vlasnik user sa userId
         data: updateNoteDto,
       });
     } catch (error: any) {
@@ -51,10 +55,11 @@ export class NotesService {
     //update azurira, where gleda koji item (id) da odabere a data predstavlja updated body. I sa ovom metodom se azuira updatedAt time
   }
 
-  async remove(id: number, userId: number) {
+  async remove(id: number, req: any) {
+    const condition = conditionData(req);
     try {
       return await this.prisma.note.delete({
-        where: { id, userId },
+        where: { id, ...condition },
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch

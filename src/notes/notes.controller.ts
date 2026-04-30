@@ -19,17 +19,17 @@ export class NotesController {
 
   @Post()
   create(@Body() createNoteDto: CreateNoteDto, @Req() req: any) {
-    return this.notesService.create(createNoteDto, req.user.userId);
+    return this.notesService.create(createNoteDto, req);
   }
 
   @Get()
   findAll(@Req() req: any) {
-    return this.notesService.findAll(req.user.userId);
+    return this.notesService.findAll(req);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.notesService.findOne(id, req.user.userId);
+    return this.notesService.findOne(id, req);
   }
 
   @Patch(':id')
@@ -38,11 +38,11 @@ export class NotesController {
     @Body() updateNoteDto: UpdateNoteDto,
     @Req() req: any,
   ) {
-    return this.notesService.update(id, updateNoteDto, req.user.userId);
+    return this.notesService.update(id, updateNoteDto, req);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.notesService.remove(id, req.user.userId);
+    return this.notesService.remove(id, req);
   }
 }

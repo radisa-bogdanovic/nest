@@ -7,7 +7,8 @@ import {
   mockPrisma,
   mockUser1,
   mockUser2,
-  userId,
+  reqUser,
+  userCondition,
 } from '../utils/testMockData';
 
 describe('Taskovi service test', () => {
@@ -41,11 +42,11 @@ describe('Taskovi service test', () => {
   it('Trebalo bi da vrati sve taskove ako nema querry', async () => {
     mockPrisma.task.findMany.mockResolvedValue([mockUser1, mockUser2]);
 
-    const result = await service.getTasks({}, userId);
+    const result = await service.getTasks({}, reqUser);
 
     expect(result).toEqual([mockUser1, mockUser2]);
     expect(prisma.task.findMany).toHaveBeenCalledWith({
-      where: { userId },
+      where: userCondition,
     });
   });
 
@@ -59,7 +60,7 @@ describe('Taskovi service test', () => {
       {
         prioritet: Prioritet.Veliki,
       },
-      userId,
+      reqUser,
     );
 
     expect(result).toEqual([
@@ -68,20 +69,22 @@ describe('Taskovi service test', () => {
     ]);
 
     expect(prisma.task.findMany).toHaveBeenCalledWith({
-      where: { prioritet: Prioritet.Veliki, userId: 1 },
+      where: userCondition,
     });
   });
 
   it('Trebalo bi da vrati task ako postoji', async () => {
     mockPrisma.task.findUnique.mockResolvedValue(mockUser1);
 
-    const result = await service.getTask(1, userId);
+    const result = await service.getTask(1, reqUser);
     expect(result).toEqual(mockUser1);
   });
 
   it('Trebalo bi da pukne error ako task ne postoji', async () => {
     mockPrisma.task.findUnique.mockResolvedValue(null);
-    await expect(service.getTask(1, userId)).rejects.toThrow(NotFoundException);
+    await expect(service.getTask(1, reqUser)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   //napravi test
@@ -93,7 +96,7 @@ describe('Taskovi service test', () => {
       ...taskData,
     });
 
-    const result = await service.createTask(taskData as any, userId);
+    const result = await service.createTask(taskData as any, reqUser);
 
     expect(result).toEqual({
       id: 1,
@@ -104,7 +107,7 @@ describe('Taskovi service test', () => {
       data: {
         ...taskData,
         user: {
-          connect: { id: userId },
+          connect: { id: reqUser.user.userId },
         },
       },
     });
@@ -119,7 +122,7 @@ describe('Taskovi service test', () => {
       ...taskData,
     });
 
-    const result = await service.updateTask(taskData as any, 1, userId);
+    const result = await service.updateTask(taskData as any, 1, reqUser);
 
     expect(result).toEqual({
       id: 1,
@@ -129,7 +132,7 @@ describe('Taskovi service test', () => {
 
   it('Trebalo bi da pukne kod update ako task ne postoji', async () => {
     mockPrisma.task.update.mockRejectedValue({ code: 'P2025' });
-    await expect(service.updateTask({} as any, 999, userId)).rejects.toThrow(
+    await expect(service.updateTask({} as any, 999, reqUser)).rejects.toThrow(
       NotFoundException,
     );
   });
@@ -139,14 +142,14 @@ describe('Taskovi service test', () => {
   it('Trebalo bi da obrise task', async () => {
     mockPrisma.task.delete.mockResolvedValue(mockUser1);
 
-    const result = await service.delete(1, userId);
+    const result = await service.delete(1, reqUser);
 
     expect(result).toEqual(mockUser1);
   });
 
   it('Trebalo bi da pukne error ako task ne postoji u bazi tokom brisanja', async () => {
     mockPrisma.task.delete.mockRejectedValue({ code: 'P2025' });
-    await expect(service.delete(999, userId)).rejects.toThrow(
+    await expect(service.delete(999, reqUser)).rejects.toThrow(
       NotFoundException,
     );
   });

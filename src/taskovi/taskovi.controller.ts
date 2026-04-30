@@ -25,7 +25,7 @@ export class TaskoviController {
 
   @Get('svi-taskovi')
   getTasks(@Query() prioritet: FindSpecificTasks, @Req() req: any) {
-    return this.taskService.getTasks(prioritet, req.user.userId);
+    return this.taskService.getTasks(prioritet, req);
   }
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Get(':id')
@@ -42,12 +42,12 @@ export class TaskoviController {
     @Req()
     req: any,
   ) {
-    return this.taskService.getTask(id, req.user.userId);
+    return this.taskService.getTask(id, req);
   }
 
   @Post('napravi')
   createTask(@Body() body: NapraviTaskDto, @Req() req: any) {
-    return this.taskService.createTask(body, req.user.userId);
+    return this.taskService.createTask(body, req);
   }
 
   @Patch(':id')
@@ -56,11 +56,11 @@ export class TaskoviController {
     @Body() body: AzurirajTaskDto,
     @Req() req: any,
   ) {
-    return this.taskService.updateTask(body, id, req.user.userId);
+    return this.taskService.updateTask(body, id, req);
   }
 
   @Delete(':id')
   deleteTask(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.taskService.delete(id, req.user.userId);
+    return this.taskService.delete(id, req);
   }
 }

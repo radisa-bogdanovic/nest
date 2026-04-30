@@ -63,3 +63,12 @@ body za tasks
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzIxMzY5OSwiZXhwIjoxNzc3MjE0NTk5fQ.RmPnIhkZMEzewDLqsu7CASwQahMdCrJvI8B5787o0i4",
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGljdGFjOTkyQGdtYWlsLmNvbSIsImlhdCI6MTc3NzIxMzY5OSwiZXhwIjoxNzc3ODE4NDk5fQ.TLdEkRkA14Yle7x8AhTgK_5pXzUUf2SXmucgweDRAp4"
 }
+
+
+
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
+ALTER TABLE "User" ADD COLUMN "role" "Role" NOT NULL DEFAULT 'USER';
+
+
+
