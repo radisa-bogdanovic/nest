@@ -51,13 +51,13 @@ export class AuthController {
   //   return this.authService.create(createNoteDto, req);
   // }
   @Roles(Role.ADMIN)
-  @Get()
+  @Get('users/')
   findAll() {
     return this.authService.findAll();
   }
 
   @Roles(Role.ADMIN)
-  @Get(':id')
+  @Get('user/:id')
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.authService.findOne(id);
   }
@@ -71,7 +71,7 @@ export class AuthController {
   //   return this.authService.update(id, updateNoteDto, req);
   // }
   @Roles(Role.ADMIN)
-  @Delete(':id')
+  @Delete('user/:id')
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.authService.remove(id, req);
   }
