@@ -28,7 +28,6 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  @ApiBody({ type: AuthValidatorDto })
   @ApiResponse({
     status: 200,
     description: 'Uspesan login',
