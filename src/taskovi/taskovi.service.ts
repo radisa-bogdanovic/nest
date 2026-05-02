@@ -12,7 +12,7 @@ export class TaskoviService {
 
   async getTasks(querry: FindSpecificTasks, req: any) {
     const condition = conditionData(req);
-    console.log(req.user);
+
     return this.prisma.task.findMany({
       //findMany pronadji sve ili sa odredjenom kondicijom
       where: condition,

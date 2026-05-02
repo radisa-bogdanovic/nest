@@ -1,4 +1,4 @@
-import { Role } from 'common/enums/role.enums';
+import { Role } from '../../common/enums/role.enums';
 import { conditionData } from '../../common/helpers/role.helpers';
 
 export const userId = 1;
@@ -28,10 +28,23 @@ const methods = {
   update: jest.fn(),
   delete: jest.fn(),
 };
+export const mockJwt = {
+  signAsync: jest.fn(),
+};
 
 export const mockPrisma = {
   task: methods,
   note: methods,
+  user: methods,
+};
+
+export const mockAuthUser = {
+  id: 1,
+  email: 'test@test.com',
+};
+export const mockAuthUser2 = {
+  id: 2,
+  email: 'test2@test.com',
 };
 
 export const titleMock = { title: 'test ime', userId: 1 };
