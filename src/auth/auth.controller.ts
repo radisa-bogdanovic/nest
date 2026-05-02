@@ -15,6 +15,8 @@ import { Public } from './decorators/public.decorator';
 import { RefreshAuthGuard } from './refresh-auth.guard';
 import { Roles } from '../../common/filters/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enums';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LoginResponseDto } from './dto/loginResponse.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +28,12 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @ApiBody({ type: AuthValidatorDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Uspesan login',
+    type: LoginResponseDto,
+  })
   @Public()
   @Post('login')
   login(@Body() dto: AuthValidatorDto) {
