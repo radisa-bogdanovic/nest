@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,6 +18,7 @@ import { Roles } from '../../common/filters/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enums';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginResponseDto } from './dto/loginResponse.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -35,9 +37,24 @@ export class AuthController {
   })
   @Public()
   @Post('login')
-  login(@Body() dto: AuthValidatorDto) {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: AuthValidatorDto,
+    @Res({
+      passthrough: true,
+    })
+    res: any,
+  ) {
+    const tokens = await this.authService.login(dto);
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: 'auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return { accessToken: tokens.accessToken };
   }
+
   @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
@@ -49,8 +66,16 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Req() req: any) {
-    return this.authService.logout(req.user.userId);
+  async logout(
+    @Req() req: any,
+    @Res({
+      passthrough: true,
+    })
+    res: any,
+  ) {
+    await this.authService.logout(req.user.userId);
+    res.clearCookie('refreshToken', { path: 'auth/refresh' });
+    return { message: 'Uspesan logout' };
   }
 
   // @Post()

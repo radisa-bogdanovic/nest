@@ -2,14 +2,10 @@
 Dodati additional info o useru (da li je ulogovan itd) dodati aktivan i deaktiviran nalog, da li nam zaista treba delete ili je dovoljno deactivate?
 name, second name, image???
 
+IMPORTANT: DODATI PRAVE VARIJABLE ZA ACCESS I REFRESH SIGN
 
-
-
-Dodati cors !
-Dodati swagger
 Dodati logging
 E2e testovi
- =
 
  {
     "email":"tictac992@gmail.com",

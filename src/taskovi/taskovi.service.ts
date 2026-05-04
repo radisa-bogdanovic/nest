@@ -11,7 +11,7 @@ export class TaskoviService {
   constructor(private prisma: PrismaService) {}
 
   async getTasks(querry: FindSpecificTasks, req: any) {
-    const condition = conditionData(req);
+    const condition = conditionData(req, querry.prioritet);
 
     return this.prisma.task.findMany({
       //findMany pronadji sve ili sa odredjenom kondicijom

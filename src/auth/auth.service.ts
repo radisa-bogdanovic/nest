@@ -10,14 +10,14 @@ import { AuthValidatorDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { hashToken } from './helpers/createHash';
-import { conditionData } from '../../common/helpers/role.helpers';
-import { adminCondition } from 'src/utils/testMockData';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async register(dto: AuthValidatorDto) {
@@ -70,14 +70,19 @@ export class AuthService {
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: 'access-secret',
-        expiresIn: '15m',
+        secret: this.configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
+        expiresIn: this.configService.getOrThrow<string>(
+          'JWT_ACCESS_EXPIRES_IN',
+        ) as any,
       }),
       this.jwtService.signAsync(payload, {
-        secret: 'refresh-secret',
-        expiresIn: '7d',
+        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.getOrThrow<string>(
+          'JWT_REFRESH_EXPIRES_IN',
+        ) as any,
       }),
     ]);
+
     return { accessToken, refreshToken };
   }
 
@@ -117,12 +122,15 @@ export class AuthService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: { id: true, email: true, role: true },
+    });
   }
 
   async findOne(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      select: { id: true, email: true, role: true },
     });
 
     if (!user) {
@@ -166,6 +174,7 @@ export class AuthService {
     try {
       return await this.prisma.user.delete({
         where: { id },
+        select: { id: true, email: true, role: true },
       });
     } catch (error: any) {
       //ovde vrati error body i zato radimo sa try/catch

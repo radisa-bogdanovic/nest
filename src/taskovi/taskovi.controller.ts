@@ -17,16 +17,20 @@ import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
 import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
 import { Throttle } from '@nestjs/throttler';
-import { AuthGuard } from '@nestjs/passport';
+
+import { ApiQuery } from '@nestjs/swagger';
+import { Prioritet } from './dto/prioritet.dto';
 
 @Controller('taskovi')
 export class TaskoviController {
   constructor(private readonly taskService: TaskoviService) {}
 
+  @ApiQuery({ name: 'prioritet', enum: Prioritet, required: false })
   @Get('svi-taskovi')
   getTasks(@Query() prioritet: FindSpecificTasks, @Req() req: any) {
     return this.taskService.getTasks(prioritet, req);
   }
+
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Get(':id')
   getTask(
