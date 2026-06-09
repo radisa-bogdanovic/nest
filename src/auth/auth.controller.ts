@@ -94,6 +94,11 @@ export class AuthController {
     return this.authService.findOne(id);
   }
 
+  @Get('me')
+  myDetails(@Req() req: any) {
+    return this.authService.findOne(req.user.userId);
+  }
+
   // @Patch(':id')
   // update(
   //   @Param('id', ParseIntPipe) id: number,
