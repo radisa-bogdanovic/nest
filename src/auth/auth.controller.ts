@@ -48,9 +48,16 @@ export class AuthController {
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
-      path: 'auth/refresh',
+      sameSite: 'none',
+      path: '/auth/refresh',
       maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+      maxAge: 15 * 60 * 1000,
     });
     return { accessToken: tokens.accessToken };
   }
