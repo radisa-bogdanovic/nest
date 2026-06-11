@@ -81,6 +81,7 @@ export class AuthController {
     res: any,
   ) {
     await this.authService.logout(req.user.userId);
+    res.clearCookie('accessToken');
     res.clearCookie('refreshToken', { path: 'auth/refresh' });
     return { message: 'Uspesan logout' };
   }
