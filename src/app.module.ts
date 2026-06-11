@@ -16,7 +16,7 @@ import { RoleGuard } from '../common/guards/roles.guard';
       isGlobal: true,
     }),
     ThrottlerModule.forRoot({
-      throttlers: [{ ttl: seconds(60), limit: 3 }],
+      throttlers: [{ ttl: seconds(60), limit: 30 }],
     }),
 
     TaskoviModule,
