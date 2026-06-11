@@ -82,7 +82,7 @@ export class AuthController {
   ) {
     await this.authService.logout(req.user.userId);
     res.clearCookie('accessToken', { path: '/' });
-    res.clearCookie('refreshToken', { path: 'auth/refresh' });
+    res.clearCookie('refreshToken', { path: '/auth/refresh' });
     return { message: 'Uspesan logout' };
   }
 
