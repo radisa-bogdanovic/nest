@@ -15,19 +15,24 @@ import { TaskoviService } from './taskovi.service';
 import { ParseIntPipe } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
-import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
+import { FindSpecificTasksDto } from './dto/find-specific-tasks.dto';
 import { Throttle } from '@nestjs/throttler';
 
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { Prioritet } from './dto/prioritet.dto';
+import { PaginatedTaskDto } from './dto/paginated-task.dto';
 
 @Controller('taskovi')
 export class TaskoviController {
   constructor(private readonly taskService: TaskoviService) {}
 
   @ApiQuery({ name: 'prioritet', enum: Prioritet, required: false })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortOrder', enum: ['asc', 'desc'], required: false })
+  @ApiOkResponse({ type: PaginatedTaskDto })
   @Get('svi-taskovi')
-  getTasks(@Query() prioritet: FindSpecificTasks, @Req() req: any) {
+  getTasks(@Query() prioritet: FindSpecificTasksDto, @Req() req: any) {
     return this.taskService.getTasks(prioritet, req);
   }
 
