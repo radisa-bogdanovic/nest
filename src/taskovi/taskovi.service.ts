@@ -1,23 +1,38 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { NapraviTaskDto } from './dto/napravi-task.dto';
 import { AzurirajTaskDto } from './dto/azuriraj-task.dto';
-import { FindSpecificTasks } from './dto/find-specific-tasks.dto';
+import { FindSpecificTasksDto } from './dto/find-specific-tasks.dto';
 import { PrismaService } from '../prisma/prisma.service';
-
+import {
+  buildPage,
+  buildPagination,
+} from 'common/pagination/pagination.helper';
 import { conditionData } from '../../common/helpers/role.helpers';
+import { skip } from 'node:test';
 
 @Injectable()
 export class TaskoviService {
   constructor(private prisma: PrismaService) {}
 
-  async getTasks(querry: FindSpecificTasks, req: any) {
+  async getTasks(querry: FindSpecificTasksDto, req: any) {
+    const p = buildPagination(querry);
     const condition = conditionData(req, querry.prioritet);
+    const orderBy = [
+      { createdAt: querry.sortOrder ?? 'desc' },
+      { id: 'desc' },
+    ] as any;
 
-    return this.prisma.task.findMany({
-      //findMany pronadji sve ili sa odredjenom kondicijom
-      where: condition,
-      //where predstavlja kondiciju. Ako posaljemo {} vraca sve. Ako postavimo prioritet(key):querry.prioritet(vradnost)
-    });
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.task.findMany({
+        where: condition,
+        orderBy,
+        skip: p.skip,
+        take: p.take,
+      }),
+
+      this.prisma.task.count({ where: condition }),
+    ]);
+    return buildPage(data, total, p);
   }
 
   async getTask(id: number, req: any) {

@@ -14,15 +14,17 @@ import { AuthService } from './auth.service';
 import { AuthValidatorDto } from './dto/auth.dto';
 import { Public } from './decorators/public.decorator';
 import { RefreshAuthGuard } from './refresh-auth.guard';
-import { Roles } from '../../common/filters/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enums';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiResponse } from '@nestjs/swagger';
 import { LoginResponseDto } from './dto/loginResponse.dto';
-import { Response } from 'express';
+
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   @Public()
   @Post('register')
@@ -81,8 +83,16 @@ export class AuthController {
     res: any,
   ) {
     await this.authService.logout(req.user.userId);
-    res.clearCookie('accessToken', { path: '/', secure: true, sameSite: 'none' });
-    res.clearCookie('refreshToken', { path: '/auth/refresh', secure: true, sameSite: 'none' });
+    res.clearCookie('accessToken', {
+      path: '/',
+      secure: true,
+      sameSite: 'none',
+    });
+    res.clearCookie('refreshToken', {
+      path: '/auth/refresh',
+      secure: true,
+      sameSite: 'none',
+    });
     return { message: 'Uspesan logout' };
   }
 
@@ -90,21 +100,10 @@ export class AuthController {
   // create(@Body() createNoteDto: CreateNoteDto, @Req() req: any) {
   //   return this.authService.create(createNoteDto, req);
   // }
-  @Roles(Role.ADMIN)
-  @Get('users/')
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Roles(Role.ADMIN)
-  @Get('user/:id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.authService.findOne(id);
-  }
 
   @Get('me')
   myDetails(@Req() req: any) {
-    return this.authService.findOne(req.user.userId);
+    return this.usersService.findOne(req.user.userId);
   }
 
   // @Patch(':id')
@@ -115,9 +114,4 @@ export class AuthController {
   // ) {
   //   return this.authService.update(id, updateNoteDto, req);
   // }
-  @Roles(Role.ADMIN)
-  @Delete('user/:id')
-  remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.authService.remove(id, req);
-  }
 }

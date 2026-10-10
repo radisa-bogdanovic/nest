@@ -3,14 +3,36 @@ import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { conditionData } from '../../common/helpers/role.helpers';
+import { FindNotesDto, NoteSortBy } from './dto/find-notes-dto';
+import {
+  buildPage,
+  buildPagination,
+} from 'common/pagination/pagination.helper';
 
 @Injectable()
 export class NotesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(req: any) {
-    const { prioritet, ...notesCondition } = conditionData(req);
-    return this.prisma.note.findMany({ where: notesCondition });
+  async findAll(query: FindNotesDto, req: any) {
+    const p = buildPagination(query);
+    const { prioritet, ...where } = conditionData(req);
+    void prioritet;
+    const sortKey = query.sortBy ?? NoteSortBy.CREATED_AT;
+    const orderBy = [
+      { [sortKey]: query.sortOrder ?? 'desc' },
+      { id: 'desc' },
+    ] as any;
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.note.findMany({
+        where,
+        orderBy,
+        skip: p.skip,
+        take: p.take,
+      }),
+      this.prisma.note.count({ where }),
+    ]);
+    return buildPage(data, total, p);
   }
 
   async findOne(id: number, req: any) {

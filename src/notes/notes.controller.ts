@@ -8,10 +8,14 @@ import {
   Delete,
   ParseIntPipe,
   Req,
+  Query,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { FindNotesDto } from './dto/find-notes-dto';
+import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { PaginatedNotesDTo } from './dto/paginated-notes.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -22,9 +26,13 @@ export class NotesController {
     return this.notesService.create(createNoteDto, req);
   }
 
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortOrder', enum: ['asc', 'desc'], required: false })
+  @ApiOkResponse({ type: PaginatedNotesDTo })
   @Get()
-  findAll(@Req() req: any) {
-    return this.notesService.findAll(req);
+  findAll(@Query() query: FindNotesDto, @Req() req: any) {
+    return this.notesService.findAll(query, req);
   }
 
   @Get(':id')
