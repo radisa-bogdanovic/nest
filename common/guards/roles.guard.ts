@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/role.enums';
 
@@ -24,9 +30,15 @@ export class RoleGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    // ?? KLJU?NA PROMENA
-    if (!user) return true; // NE FALSE
+    if (!user) {
+      throw new UnauthorizedException('Niste ulogovani');
+    }
 
-    return requiredRoles.some((role) => user.role === role);
+    const allowed = requiredRoles.some((role) => user.role === role);
+    if (!allowed) {
+      throw new ForbiddenException('Nemas dozvolu brate, plati da budes admin');
+    }
+
+    return true;
   }
 }
